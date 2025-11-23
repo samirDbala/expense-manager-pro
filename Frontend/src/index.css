@@ -609,6 +609,27 @@ table a {
   display: grid;
   gap: var(--space-md);
   margin-top: var(--space-lg);
+
+  /* border */
+  position: relative;
+  overflow: visible;
+  border-top: 0.15em solid white;
+  border-left: 0.15em solid white;
+  border-right: 0.15em solid hsl(var(--bkg));
+  border-bottom: 0.15em solid hsl(var(--bkg));
+}
+
+.auth-card form {
+  max-width: 100% !important;
+}
+
+.auth-card::before {
+  content: "";
+  position: absolute;
+  inset: 0.55rem;
+  border: 2px dashed hsl(var(--text));
+  border-radius: calc(var(--round-lg) * 0.6);
+  pointer-events: none;
 }
 
 /* space between input fields */
@@ -624,7 +645,8 @@ table a {
 }
 .password-box input {
   width: 100%;
-  padding-right: 48px; /* space for eye icon */
+  /* space for eye icon */
+  padding-right: 48px;
 }
 .eye-toggle {
   position: absolute;
@@ -652,7 +674,8 @@ table a {
 
 .social-login {
   display: flex !important;
-  flex-direction: row !important;   /* icons in one line */
+  /* icons in one line */
+  flex-direction: row !important; 
   justify-content: center;
   align-items: center;
   gap: 14px;
@@ -665,14 +688,16 @@ table a {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* space between icon and text */
-  padding: 10px 20px; /* wider button */
+  /* space between icon and text */
+  gap: 8px; 
+  /* wider button */
+  padding: 10px 20px; 
   border-radius: var(--round-sm);
   border: 2px solid hsl(var(--accent));
   background-color: hsl(var(--bkg));
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.25s, box-shadow 0.25s;
+  transition: transform 0.25s, box-shadow 0.25s; 
 }
 
 /* icon inside the social button */
@@ -703,7 +728,8 @@ table a {
   content: "";
   position: absolute;
   top: 50%;
-  width: 24%; /* shorter width so lines do not overlap */
+  /* shorter width so lines do not overlap */
+  width: 24%; 
   height: 2px;
   background: hsl(var(--light));
 }
@@ -736,8 +762,10 @@ table a {
 }
 
 .auth-card h1 {
-  font-size: 1.9rem; /* smaller than the big homepage heading */
-  font-weight: 700; /* keeps it bold */
+  /* smaller than the big homepage heading */
+  font-size: 1.9rem; 
+  /* keeps it bold */
+  font-weight: 700; 
   margin-bottom: 0.25rem;
   line-height: 1.2;
 }
@@ -768,5 +796,3 @@ table a {
   color: hsl(var(--bkg));
   box-shadow: 0 0 0 3px hsl(var(--bkg)), 0 0 0 6px hsl(var(--accent));
 }
-
-
