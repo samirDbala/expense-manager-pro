@@ -10,8 +10,6 @@ import {
   YAxis,
   CartesianGrid,
   Legend,
-  LineChart,
-  Line,
 } from "recharts";
 
 import { formatCurrency } from "../helpers";
@@ -48,9 +46,6 @@ const Analytics = ({ budgets, expenses }) => {
 
   const currentYear = now.getFullYear();
 
-  // previous month
-  const lastMonthDate = new Date(currentYear, currentMonth - 1, 1);
-
   // this month expenses
   const thisMonthExpenses = expenses.filter((expense) => {
     const date = new Date(expense.createdAt);
@@ -62,22 +57,6 @@ const Analytics = ({ budgets, expenses }) => {
 
   // this month total
   const thisMonthTotal = thisMonthExpenses.reduce(
-    (acc, curr) => acc + Number(curr.amount),
-    0,
-  );
-
-  // last month expenses
-  const lastMonthExpenses = expenses.filter((expense) => {
-    const date = new Date(expense.createdAt);
-
-    return (
-      date.getMonth() === lastMonthDate.getMonth() &&
-      date.getFullYear() === lastMonthDate.getFullYear()
-    );
-  });
-
-  // last month total
-  const lastMonthTotal = lastMonthExpenses.reduce(
     (acc, curr) => acc + Number(curr.amount),
     0,
   );
@@ -101,38 +80,6 @@ const Analytics = ({ budgets, expenses }) => {
 
     fill: `hsl(${budget.color})`,
   }));
-
-  // month names
-  const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
-  // trend data
-  const trendData = monthNames.map((month, index) => {
-    const total = expenses
-      .filter((expense) => {
-        const date = new Date(expense.createdAt);
-
-        return date.getMonth() === index && date.getFullYear() === currentYear;
-      })
-      .reduce((acc, curr) => acc + Number(curr.amount), 0);
-
-    return {
-      month,
-      total,
-    };
-  });
 
   return (
     <div className="analytics">
@@ -163,7 +110,7 @@ const Analytics = ({ budgets, expenses }) => {
         </div>
 
         <div className="analytics-card">
-          <h4>Top Category</h4>
+          <h4>Most Spent</h4>
 
           <h2>{topCategory?.name || "None"}</h2>
 
@@ -175,12 +122,6 @@ const Analytics = ({ budgets, expenses }) => {
 
           <h2>{formatCurrency(thisMonthTotal)}</h2>
         </div>
-
-        <div className="analytics-card">
-          <h4>Last Month</h4>
-
-          <h2>{formatCurrency(lastMonthTotal)}</h2>
-        </div>
       </div>
 
       {/* charts */}
@@ -190,31 +131,67 @@ const Analytics = ({ budgets, expenses }) => {
           <h3>Spending Overview</h3>
 
           {pieData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={360}>
+            <ResponsiveContainer width="100%" height={390}>
               <PieChart>
                 <Pie
                   data={pieData}
                   dataKey="value"
                   nameKey="name"
-                  innerRadius={80}
-                  outerRadius={120}
-                  paddingAngle={5}
-                  animationDuration={1200}
+                  innerRadius={95}
+                  outerRadius={130}
+                  paddingAngle={3}
+                  cornerRadius={10}
+                  stroke="none"
+                  animationDuration={1400}
                 >
                   {pieData.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
+                    <Cell
+                      key={index}
+                      fill={entry.color}
+                      style={{
+                        filter: "drop-shadow(0 8px 14px rgba(0,0,0,0.12))",
+                      }}
+                    />
                   ))}
                 </Pie>
+                <text
+                  x="50%"
+                  y="48%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  style={{
+                    fontSize: "2rem",
+                    fontWeight: 800,
+                    fill: "#111827",
+                  }}
+                >
+                  {formatCurrency(totalSpent)}
+                </text>
 
+                <text
+                  x="50%"
+                  y="58%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  style={{
+                    fontSize: "0.9rem",
+                    fill: "#6b7280",
+                    fontWeight: 600,
+                  }}
+                >
+                  Total Spent
+                </text>
                 <Tooltip
                   formatter={(value) => formatCurrency(value)}
                   contentStyle={{
-                    borderRadius: "1rem",
-
+                    borderRadius: "18px",
                     border: "none",
-
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+                    background: "rgba(255,255,255,0.96)",
+                    backdropFilter: "blur(14px)",
+                    boxShadow: "0 12px 35px rgba(0,0,0,0.14)",
+                    padding: "12px 16px",
                   }}
+                  cursor={{ fill: "rgba(0,0,0,0.03)" }}
                 />
 
                 <Legend
@@ -257,7 +234,7 @@ const Analytics = ({ budgets, expenses }) => {
           <h3>Budget Spending</h3>
 
           {monthlyData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={360}>
+            <ResponsiveContainer width="100%" height={390}>
               <BarChart
                 data={monthlyData}
                 margin={{
@@ -268,7 +245,11 @@ const Analytics = ({ budgets, expenses }) => {
                 }}
                 barCategoryGap="35%"
               >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.08} />
+                <CartesianGrid
+                  strokeDasharray="4 4"
+                  vertical={false}
+                  opacity={0.08}
+                />
 
                 <XAxis
                   dataKey="name"
@@ -303,12 +284,18 @@ const Analytics = ({ budgets, expenses }) => {
 
                 <Bar
                   dataKey="spent"
-                  radius={[14, 14, 0, 0]}
-                  animationDuration={1200}
-                  maxBarSize={80}
+                  radius={[18, 18, 0, 0]}
+                  animationDuration={1400}
+                  maxBarSize={65}
                 >
                   {monthlyData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.fill}
+                      style={{
+                        filter: "drop-shadow(0 8px 12px rgba(0,0,0,0.12))",
+                      }}
+                    />
                   ))}
                 </Bar>
               </BarChart>
@@ -333,75 +320,6 @@ const Analytics = ({ budgets, expenses }) => {
             </div>
           )}
         </div>
-      </div>
-
-      {/* monthly trend */}
-      <div
-        className="chart-card"
-        style={{
-          marginTop: "2rem",
-        }}
-      >
-        <h3>Monthly Spending Trend</h3>
-
-        <ResponsiveContainer width="100%" height={360}>
-          <LineChart
-            data={trendData}
-            margin={{
-              top: 10,
-              right: 25,
-              left: 10,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" opacity={0.08} />
-
-            <XAxis
-              dataKey="month"
-              axisLine={false}
-              tickLine={false}
-              interval={0}
-              tick={{
-                fill: "#6b7280",
-                fontSize: window.innerWidth <= 768 ? 12 : 14,
-                fontWeight: window.innerWidth <= 768 ? 500 : 600,
-              }}
-              padding={{
-                left: window.innerWidth <= 768 ? 5 : 20,
-                right: window.innerWidth <= 768 ? 5 : 20,
-              }}
-              tickFormatter={(value) =>
-                window.innerWidth <= 768 ? value.charAt(0) : value
-              }
-            />
-
-            <YAxis axisLine={false} tickLine={false} width={50} />
-
-            <Tooltip
-              formatter={(value) => formatCurrency(value)}
-              contentStyle={{
-                borderRadius: "1rem",
-
-                border: "none",
-
-                boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
-              }}
-            />
-
-            <Line
-              type="monotone"
-              dataKey="total"
-              stroke="#0ea5e9"
-              strokeWidth={4}
-              dot={{
-                r: 5,
-              }}
-              activeDot={{
-                r: 8,
-              }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
       </div>
     </div>
   );
