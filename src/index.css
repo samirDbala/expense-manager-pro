@@ -1048,3 +1048,35 @@ body {
     font-size: 13px;
   }
 }
+
+@media (max-width: 768px) {
+  .intro {
+    min-height: auto;
+    overflow-x: hidden;
+    padding: 0 20px 0;
+    gap: 0;
+  }
+
+  .hero {
+    margin-top: -20px;
+    margin-bottom: 0;
+  }
+
+  nav {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+.intro img {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto 0;
+  display: block;
+}
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0;
+  }

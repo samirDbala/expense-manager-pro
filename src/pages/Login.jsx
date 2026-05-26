@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 import { EyeIcon, EyeSlashIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 
@@ -26,6 +26,10 @@ import illustration from "../assets/illustration.jpg";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  if (auth.currentUser) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const [isSignup, setIsSignup] = useState(false);
 
