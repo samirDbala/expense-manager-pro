@@ -1099,3 +1099,16 @@ body {
 
   display: block;
 }
+
+@media (max-width: 768px) {
+  .budget .flex-sm .btn {
+    height: 44px;
+    min-height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    white-space: nowrap;
+  }
+}

@@ -360,10 +360,19 @@ const Analytics = ({ budgets, expenses }) => {
               dataKey="month"
               axisLine={false}
               tickLine={false}
-              padding={{
-                left: 20,
-                right: 20,
+              interval={0}
+              tick={{
+                fill: "#6b7280",
+                fontSize: window.innerWidth <= 768 ? 12 : 14,
+                fontWeight: window.innerWidth <= 768 ? 500 : 600,
               }}
+              padding={{
+                left: window.innerWidth <= 768 ? 5 : 20,
+                right: window.innerWidth <= 768 ? 5 : 20,
+              }}
+              tickFormatter={(value) =>
+                window.innerWidth <= 768 ? value.charAt(0) : value
+              }
             />
 
             <YAxis axisLine={false} tickLine={false} width={50} />
