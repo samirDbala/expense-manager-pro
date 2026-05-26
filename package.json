@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "firebase": "^12.13.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",
-    "react-router-dom": "6.8",
-    "react-toastify": "^11.0.5"
+    "react-router-dom": "^7.15.1",
+    "react-toastify": "^11.0.5",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
