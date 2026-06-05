@@ -78,6 +78,8 @@ const ExpenseItem = ({ expense, budgets = [], showBudget }) => {
             <Link
               to={`/budget/${budget.id}`}
               style={{
+                "--backdrop": `hsl(${budget.color})`,
+
                 background: `hsl(${budget.color})`,
 
                 color: "#fff",
