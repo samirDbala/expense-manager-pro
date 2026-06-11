@@ -1160,3 +1160,10 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+@media (max-width: 768px) {
+  .budget {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
