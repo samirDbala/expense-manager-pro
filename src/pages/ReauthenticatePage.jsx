@@ -111,7 +111,7 @@ const ReauthenticatePage = () => {
   };
 
   return (
-    <div className="intro">
+    <div className="intro reauth-page">
       <div>
         {/* heading */}
         <h1

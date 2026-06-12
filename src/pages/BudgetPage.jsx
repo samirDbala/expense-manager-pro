@@ -1,5 +1,6 @@
 // rrd imports
 import { useLoaderData } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 // library
 import toast from "react-hot-toast";
@@ -34,6 +35,8 @@ import {
   getExpensesFromFirestore,
   addExpenseToFirestore,
   deleteExpenseFromFirestore,
+  subscribeToBudgets,
+  subscribeToExpenses,
 } from "../firebase/firestore";
 
 // loader
@@ -144,7 +147,43 @@ export async function budgetAction({ request }) {
 }
 
 const BudgetPage = () => {
-  const { budget, expenses } = useLoaderData();
+  const loaderData = useLoaderData();
+
+  const [budget, setBudget] = useState(loaderData.budget);
+
+  const [expenses, setExpenses] = useState(loaderData.expenses);
+
+  useEffect(() => {
+    const unsubscribeBudgets = subscribeToBudgets((budgetsData) => {
+      const updatedBudget = budgetsData.find(
+        (b) => b.id === loaderData.budget.id,
+      );
+
+      if (updatedBudget) {
+        const spent = expenses
+          .filter((expense) => expense.budgetId === updatedBudget.id)
+          .reduce((acc, curr) => acc + Number(curr.amount), 0);
+
+        setBudget({
+          ...updatedBudget,
+          spent,
+        });
+      }
+    });
+
+    const unsubscribeExpenses = subscribeToExpenses((expensesData) => {
+      setExpenses(
+        expensesData.filter(
+          (expense) => expense.budgetId === loaderData.budget.id,
+        ),
+      );
+    });
+
+    return () => {
+      unsubscribeBudgets();
+      unsubscribeExpenses();
+    };
+  }, [loaderData.budget.id]);
 
   // analytics calculations
   const totalSpent = expenses.reduce(
@@ -159,27 +198,29 @@ const BudgetPage = () => {
       ? Math.max(...expenses.map((expense) => Number(expense.amount)))
       : 0;
 
-const pieData =
-  remaining > 0
-    ? [
-        {
-          name: "Spent",
-          value: totalSpent,
-        },
-        {
-          name: "Remaining",
-          value: remaining,
-        },
-      ]
-    : [
-        {
-          name: "Spent",
-          value: totalSpent,
-        },
-      ];
+  const pieData =
+    remaining > 0
+      ? [
+          {
+            name: "Spent",
+            value: totalSpent,
+          },
+          {
+            name: "Remaining",
+            value: remaining,
+          },
+        ]
+      : [
+          {
+            name: "Spent",
+            value: totalSpent,
+          },
+        ];
 
   const chartData = expenses.map((expense) => ({
-    name: expense.name,
+    name:
+      expense.name.length > 8 ? expense.name.slice(0, 8) + "…" : expense.name,
+
     amount: Number(expense.amount),
   }));
 
@@ -232,13 +273,13 @@ const pieData =
           <div className="analytics-card">
             <h4>Total Budget</h4>
 
-            <h2>₹{Number(budget.amount).toLocaleString()}</h2>
+            <h2>{formatCompactCurrency(Number(budget.amount))}</h2>
           </div>
 
           <div className="analytics-card">
             <h4>Total Spent</h4>
 
-            <h2>₹{totalSpent.toLocaleString()}</h2>
+            <h2>{formatCompactCurrency(totalSpent)}</h2>
           </div>
 
           <div className="analytics-card">
@@ -249,7 +290,7 @@ const pieData =
                 color: remaining < 0 ? "#ef4444" : "#22c55e",
               }}
             >
-              ₹{remaining.toLocaleString()}
+              {formatCompactCurrency(remaining)}
             </h2>
           </div>
 
@@ -258,7 +299,9 @@ const pieData =
 
             <h2>{expenses.length}</h2>
 
-            <small>Highest Expense: ₹{highestExpense.toLocaleString()}</small>
+            <small>
+              Highest Expense: {formatCompactCurrency(highestExpense)}
+            </small>
           </div>
         </div>
 
@@ -358,7 +401,7 @@ const pieData =
                   margin={{
                     top: 10,
                     right: 20,
-                    left: 35,
+                    left: 0,
                     bottom: 10,
                   }}
                   barCategoryGap="25%"
@@ -370,6 +413,7 @@ const pieData =
                   />
                   <XAxis
                     dataKey="name"
+                    interval={0}
                     tick={{
                       fill: "#6b7280",
                       fontSize: 14,

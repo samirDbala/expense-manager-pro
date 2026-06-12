@@ -2,7 +2,11 @@ import { Link, useFetcher } from "react-router-dom";
 
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 
-import { formatCurrency, formatDateToLocaleString } from "../helpers";
+import {
+  formatCurrency,
+  formatCompactCurrency,
+  formatDateToLocaleString,
+} from "../helpers";
 
 import { useState } from "react";
 
@@ -70,6 +74,7 @@ const ExpenseItem = ({ expense, budgets = [], showBudget }) => {
       </td>
 
       {/* amount */}
+      {/* amount */}
       <td>
         {editing ? (
           <input
@@ -80,7 +85,9 @@ const ExpenseItem = ({ expense, budgets = [], showBudget }) => {
             onChange={(e) => setAmount(e.target.value)}
           />
         ) : (
-          formatCurrency(Number(expense.amount))
+          <span title={formatCurrency(Number(expense.amount))}>
+            {formatCompactCurrency(Number(expense.amount))}
+          </span>
         )}
       </td>
 
