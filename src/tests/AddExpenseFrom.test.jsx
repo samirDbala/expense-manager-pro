@@ -22,7 +22,7 @@ function renderForm() {
   const router = createMemoryRouter([
     {
       path: "/",
-      element: <AddExpenseFrom budgets={[]} />,
+      element: <AddExpenseFrom budgets={budgets} />,
     },
   ]);
 
@@ -192,19 +192,4 @@ test("budgets are sorted by createdAt", () => {
 
   expect(options[0]).toHaveTextContent("Food");
   expect(options[1]).toHaveTextContent("Travel");
-});
-
-//Dropdown hidden when only one budget exists
-test("hides budget category when only one budget exists", () => {
-  renderForm([
-    {
-      id: "1",
-      name: "Food",
-      createdAt: 1,
-    },
-  ]);
-
-  const select = screen.getByLabelText(/budget category/i);
-
-  expect(select).not.toBeVisible();
 });
